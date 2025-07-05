@@ -1,9 +1,11 @@
+// index.html – TREDT Union File Viewer (Public Only)
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TREDT File Manager</title>
+  <title>TREDT File Viewer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -23,21 +25,6 @@
     section {
       margin-top: 20px;
     }
-    input, textarea, select, button {
-      padding: 8px;
-      margin: 5px 0;
-      width: 100%;
-      border: none;
-      border-radius: 4px;
-    }
-    button {
-      background: #007acc;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #005f9e;
-    }
     .file-card {
       background: #2a2a2a;
       padding: 10px;
@@ -56,34 +43,30 @@
       border-radius: 3px;
       font-size: 12px;
     }
+    a.admin-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    a.admin-link:hover {
+      color: #fff;
+    }
   </style>
 </head>
 <body>
-  <header>TREDT Union File Manager</header>
-
-  <section>
-    <h2>Upload File</h2>
-    <form id="uploadForm">
-      <input type="text" name="title" placeholder="Title" required />
-      <textarea name="description" placeholder="Description"></textarea>
-      <input type="text" name="tags" placeholder="Tags (comma separated)" />
-      <select name="type">
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-      </select>
-      <input type="file" name="file" required />
-      <button type="submit">Upload</button>
-    </form>
-  </section>
+  <header>TREDT Union Public File Browser</header>
 
   <section>
     <h2>Public Files</h2>
     <div id="fileList"></div>
   </section>
 
+  <a class="admin-link" href="/admin.html">🔐 Admin Login</a>
+
   <script>
     const apiBase = 'https://tredt-information-services.onrender.com';
-    const uploadSecret = 'tredt%$5323#2014septsddas';
 
     async function loadFiles() {
       const res = await fetch(`${apiBase}/api/files/public`);
@@ -103,23 +86,6 @@
         list.appendChild(card);
       });
     }
-
-    document.getElementById('uploadForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const res = await fetch(`${apiBase}/api/upload`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'x-upload-secret': uploadSecret
-        }
-      });
-      const result = await res.json();
-      alert(result.message || result.error);
-      form.reset();
-      loadFiles();
-    });
 
     window.onload = loadFiles;
   </script>
