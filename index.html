@@ -142,88 +142,106 @@
     }
   </style>
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm';
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm';
 
-    const supabase = createClient(
-      'https://iifsgfipnximqzuhsjvj.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw'
-    );
+  const supabase = createClient(
+    'https://iifsgfipnximqzuhsjvj.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw'
+  );
 
-    const bucket = 'tredt-files';
+  const bucket = 'tredt-files';
 
-    async function listFiles(folder, containerId, showDownload = true) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '<p>Loading...</p>';
+  async function listFilesRecursively(path = '', allFiles = []) {
+    const { data, error } = await supabase.storage.from(bucket).list(path, { limit: 100 });
+    if (error) {
+      console.error(`Error reading ${path}:`, error);
+      return allFiles;
+    }
 
-      const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 200 });
-
-      if (error || !data) {
-        console.error(`Error loading ${folder}:`, error);
-        container.innerHTML = `<p>Error loading ${folder} files.</p>`;
-        return;
-      }
-
-      container.innerHTML = '';
-      for (const file of data) {
-        if (file.name && !file.metadata) { // Skip folders
-          const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${folder}/${file.name}`;
-          const card = document.createElement('div');
-          card.className = 'file-card';
-          card.innerHTML = `
-            <h3>${file.name}</h3>
-            ${showDownload
-              ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>`
-              : `<button onclick="requestFile('${file.name}')">Request Access</button>`}
-          `;
-          container.appendChild(card);
-        }
+    for (const item of data) {
+      const itemPath = path ? `${path}/${item.name}` : item.name;
+      if (item.metadata) {
+        allFiles.push(itemPath);
+      } else {
+        await listFilesRecursively(itemPath, allFiles); // Recursive call for subfolders
       }
     }
 
-    async function requestFile(filename) {
-      const requester = prompt("Enter your email:");
-      const reason = prompt("Why do you want this file?");
-      if (!requester || !reason) return alert("Request cancelled.");
+    return allFiles;
+  }
 
-      const response = await fetch('https://tredt-information-services.onrender.com/api/files/request', {
+  function renderFileList(files, containerId, showDownload = true, type = '') {
+    const container = document.getElementById(containerId);
+    if (!files.length) {
+      container.innerHTML = `<p>No ${type} files available.</p>`;
+      return;
+    }
+
+    container.innerHTML = '';
+    for (const path of files) {
+      const name = path.split('/').pop();
+      const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${path}`;
+
+      const card = document.createElement('div');
+      card.className = 'file-card';
+      card.innerHTML = `
+        <h3>${name}</h3>
+        ${showDownload
+          ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>`
+          : `<button onclick="requestFile('${name}')">Request Access</button>`}
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  async function listFilesByType() {
+    const allFiles = await listFilesRecursively('');
+    const publicFiles = allFiles.filter(f => f.startsWith('public/'));
+    const privateFiles = allFiles.filter(f => f.startsWith('private/'));
+
+    renderFileList(publicFiles, 'publicFiles', true, 'public');
+    renderFileList(privateFiles, 'privateFiles', false, 'private');
+  }
+
+  async function requestFile(filename) {
+    const requester = prompt("Enter your email:");
+    const reason = prompt("Why do you want this file?");
+    if (!requester || !reason) return alert("Request cancelled.");
+
+    const response = await fetch('https://tredt-information-services.onrender.com/api/files/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, requester, reason })
+    });
+
+    const result = await response.json();
+    alert(result.message || 'Request submitted.');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('requestForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        filename: form.title.value,
+        requester: `${form.name.value} (${form.state.value}) - ${form.email.value}`,
+        reason: form.reason.value
+      };
+
+      const res = await fetch(`https://tredt-information-services.onrender.com/api/files/request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename, requester, reason })
+        body: JSON.stringify(data)
       });
 
-      const result = await response.json();
-      if (result.message) {
-        alert("📩 Email sent! Your request is under review.");
-      } else {
-        alert("❌ Failed to send request: " + result.error);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('requestForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const form = e.target;
-        const data = {
-          filename: form.title.value,
-          requester: `${form.name.value} (${form.state.value}) - ${form.email.value}`,
-          reason: form.reason.value
-        };
-
-        const res = await fetch(`https://tredt-information-services.onrender.com/api/files/request`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-        alert(result.message || 'Your request has been submitted.');
-        form.reset();
-      });
-
-      listFiles('public', 'publicFiles', true);
-      listFiles('private', 'privateFiles', false);
+      const result = await res.json();
+      alert(result.message || 'Request submitted. You will receive the file via email.');
+      form.reset();
     });
-  </script>
+
+    listFilesByType();
+  });
+</script>
 </head>
 <body data-theme="default">
   <header>
