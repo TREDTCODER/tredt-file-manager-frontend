@@ -73,6 +73,7 @@
       margin: 0;
       padding: 0;
     }
+
     header {
       background-color: var(--header-bg);
       color: white;
@@ -81,21 +82,25 @@
       font-size: 24px;
       font-weight: bold;
     }
+
     main {
       padding: 20px;
       max-width: 900px;
       margin: auto;
     }
+
     select.theme-selector {
       display: block;
       margin: 10px auto;
       padding: 5px;
     }
+
     h2 {
       color: var(--primary);
       border-bottom: 2px solid #ccc;
       padding-bottom: 5px;
     }
+
     .file-card {
       background-color: var(--card-bg);
       padding: 15px;
@@ -104,18 +109,11 @@
       border-radius: 5px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
+
     .file-card h3 {
       margin: 0 0 5px;
     }
-    .tag {
-      display: inline-block;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      padding: 3px 6px;
-      margin-right: 4px;
-      border-radius: 3px;
-      font-size: 12px;
-    }
+
     .form-section {
       background: var(--card-bg);
       padding: 20px;
@@ -123,6 +121,7 @@
       margin-top: 40px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
+
     input, textarea, select, button {
       padding: 10px;
       margin: 8px 0;
@@ -133,15 +132,18 @@
       background-color: var(--bg);
       color: var(--text);
     }
+
     button {
       background-color: var(--primary);
       color: white;
       font-weight: bold;
       cursor: pointer;
     }
+
     button:hover {
       opacity: 0.9;
     }
+
     .admin-link {
       display: block;
       text-align: center;
@@ -164,6 +166,7 @@
       <option>Radioactive</option>
     </select>
   </header>
+
   <main>
     <a class="admin-link" href="https://tredt-file-manager-frontend.onrender.com/admin.html">🔐 Admin Login</a>
     <h2>Public & Private File List</h2>
@@ -195,8 +198,16 @@
     async function listFiles(folder, containerId, showDownload = true) {
       const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 100 });
       const container = document.getElementById(containerId);
-      if (error || !data) {
-        container.innerHTML = '<p>Error loading files.</p>';
+
+      if (error) {
+        console.error(`❌ Error loading ${folder} files:`, error);
+        container.innerHTML = `<p>Error loading ${folder} files.</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.warn(`⚠️ No files found in ${folder}`);
+        container.innerHTML = `<p>No files in ${folder}.</p>`;
         return;
       }
 
@@ -207,12 +218,15 @@
         card.className = 'file-card';
         card.innerHTML = `
           <h3>${file.name}</h3>
-          ${showDownload ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>` : 
+          ${showDownload ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>` :
             `<button onclick="requestFile('${file.name}')">Request Access</button>`}
         `;
         container.appendChild(card);
       }
     }
+
+    listFiles('public', 'publicFiles', true);
+    listFiles('private', 'privateFiles', false);
 
     async function requestFile(filename) {
       const requester = prompt("Enter your email:");
@@ -224,6 +238,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename, requester, reason })
       });
+
       const result = await response.json();
       if (result.message) {
         alert("📩 Email sent! Your request is under review. You will receive the file in 2–3 days or less.");
@@ -231,40 +246,6 @@
         alert("❌ Failed to send request: " + result.error);
       }
     }
-
-    listFiles('public', 'publicFiles', true);
-    listFiles('private', 'privateFiles', false);
-
-    async function listFiles(folder, containerId, showDownload = true) {
-  const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 100 });
-
-  const container = document.getElementById(containerId);
-
-  if (error) {
-    console.error(`❌ Error listing ${folder}:`, error);
-    container.innerHTML = `<p>Error loading ${folder} files.</p>`;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    console.warn(`⚠️ No files found in ${folder}`);
-    container.innerHTML = `<p>No files in ${folder}.</p>`;
-    return;
-  }
-
-  container.innerHTML = '';
-  for (const file of data) {
-    const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${folder}/${file.name}`;
-    const card = document.createElement('div');
-    card.className = 'file-card';
-    card.innerHTML = `
-      <h3>${file.name}</h3>
-      ${showDownload ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>` : 
-        `<button onclick="requestFile('${file.name}')">Request Access</button>`}
-    `;
-    container.appendChild(card);
-  }
-}
 
     document.getElementById('requestForm').addEventListener('submit', async e => {
       e.preventDefault();
