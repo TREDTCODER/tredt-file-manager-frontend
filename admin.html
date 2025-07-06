@@ -19,12 +19,12 @@
       border-bottom: 2px solid #555;
       padding-bottom: 10px;
     }
-    form {
+    form, .upload-block {
       background: #2a2a2a;
       padding: 15px;
       border-radius: 6px;
       max-width: 500px;
-      margin: 0 auto;
+      margin: 20px auto;
     }
     input, textarea, select, button {
       display: block;
@@ -57,22 +57,40 @@
   </div>
 
   <div id="uploadSection" style="display:none;">
-    <form id="uploadForm">
-      <input type="text" name="title" placeholder="Title" required />
-      <textarea name="description" placeholder="Description"></textarea>
-      <input type="text" name="tags" placeholder="Tags (comma separated)" />
-      <select name="type">
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-      </select>
-      <input type="file" name="files" multiple required />
-      <button type="submit">Upload Multiple Files</button>
-    </form>
+    <div class="upload-block">
+      <h3>Single File Upload</h3>
+      <form id="uploadSingleForm">
+        <input type="text" name="title" placeholder="Title" required />
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="text" name="tags" placeholder="Tags (comma separated)" />
+        <select name="type">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+        <input type="file" name="file" required />
+        <button type="submit">Upload File</button>
+      </form>
+    </div>
+
+    <div class="upload-block">
+      <h3>Upload Multiple Files</h3>
+      <form id="uploadMultipleForm">
+        <input type="text" name="title" placeholder="Base Title for Files" required />
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="text" name="tags" placeholder="Tags (comma separated)" />
+        <select name="type">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+        <input type="file" name="files" multiple required />
+        <button type="submit">Upload All Files</button>
+      </form>
+    </div>
   </div>
 
   <script>
     const apiBase = 'https://tredt-information-services.onrender.com';
-    const uploadSecret = 'tredtUploadToken123';  // Must match your backend .env
+    const uploadSecret = 'tredtUploadToken123';
 
     function login(event) {
       event.preventDefault();
@@ -85,7 +103,25 @@
       }
     }
 
-    document.getElementById('uploadForm').addEventListener('submit', async e => {
+    document.getElementById('uploadSingleForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const res = await fetch(`${apiBase}/api/upload`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'x-upload-secret': uploadSecret
+        }
+      });
+
+      const result = await res.json();
+      alert(result.message || result.error);
+      form.reset();
+    });
+
+    document.getElementById('uploadMultipleForm').addEventListener('submit', async e => {
       e.preventDefault();
       const form = e.target;
       const files = form.files.files;
@@ -114,7 +150,7 @@
         console.log(result);
       }
 
-      alert('✅ Files uploaded. They will appear in the index page if public.');
+      alert('✅ All files uploaded successfully!');
       form.reset();
     });
   </script>
