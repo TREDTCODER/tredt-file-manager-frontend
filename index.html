@@ -169,16 +169,18 @@
         <label><input type="checkbox" name="declaration" required /> I, do hereby submit these information to this Service with the best of my knowledge.</label>
         <button type="submit">Submit Request</button>
       </form>
+
+      <h2>Public Files</h2>
+      <div id="publicFiles">Loading public files...</div>
+
+      <h2>Private Files</h2>
+      <div id="privateFiles">Loading private files...</div>
     </div>
-
-    <h2>Public Files</h2>
-    <div id="publicFiles">Loading public files...</div>
-
-    <h2>Private Files</h2>
-    <div id="privateFiles">Loading private files...</div>
   </main>
 
   <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm';
+
     const supabase = createClient(
       'https://iifsgfipnximqzuhsjvj.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw'
@@ -191,24 +193,16 @@
       container.innerHTML = '<p>Loading...</p>';
 
       const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 200 });
-      console.log("Trying to list folder:", folder);
-      console.log("Data:", data);
-      console.log("Error:", error);
 
-      if (error) {
-        console.error(`❌ Error listing ${folder}:`, error);
+      if (error || !data) {
+        console.error(`Error loading ${folder}:`, error);
         container.innerHTML = `<p>Error loading ${folder} files.</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        container.innerHTML = `<p>No files in ${folder}.</p>`;
         return;
       }
 
       container.innerHTML = '';
       for (const file of data) {
-        if (file.name && !file.metadata) { // skip folders
+        if (file.name && !file.metadata) {
           const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${folder}/${file.name}`;
           const card = document.createElement('div');
           card.className = 'file-card';
@@ -232,6 +226,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename, requester, reason })
       });
+
       const result = await response.json();
       if (result.message) {
         alert("📩 Email sent! Your request is under review. You will receive the file in 2–3 days or less.");
