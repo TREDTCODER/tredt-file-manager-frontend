@@ -187,7 +187,7 @@
     const bucket = 'tredt-files';
 
     async function listFiles(folder, containerId, showDownload = true) {
-      const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 100 });
+      const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 200 });
       const container = document.getElementById(containerId);
       if (error || !data) {
         container.innerHTML = '<p>Error loading files.</p>';
