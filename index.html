@@ -3,222 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TREDT Union File Directory</title>
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+  <title>TREDT File Manager</title>
   <style>
-    :root {
-      --bg: #ffffff;
-      --text: #333;
-      --primary: #007acc;
-      --card-bg: #ffffff;
-      --header-bg: #007acc;
-      --tag-bg: #eee;
-      --tag-text: #444;
-    }
-
-    [data-theme="dark"] {
-      --bg: #121212;
-      --text: #e0e0e0;
-      --primary: #2196f3;
-      --card-bg: #1e1e1e;
-      --header-bg: #1f1f1f;
-      --tag-bg: #333;
-      --tag-text: #ccc;
-    }
-
-    [data-theme="synthwave"] {
-      --bg: #2b0030;
-      --text: #f7e2ff;
-      --primary: #ff00ff;
-      --card-bg: #3a0044;
-      --header-bg: #4b005e;
-      --tag-bg: #5f007a;
-      --tag-text: #fff;
-    }
-
-    [data-theme="minecraft"] {
-      --bg: #3c2f2f;
-      --text: #d7d7d7;
-      --primary: #62bd19;
-      --card-bg: #4f3d3d;
-      --header-bg: #5c4646;
-      --tag-bg: #6d5454;
-      --tag-text: #d7d7d7;
-    }
-
-    [data-theme="dos"] {
-      --bg: #000000;
-      --text: #00ff00;
-      --primary: #00ff00;
-      --card-bg: #000000;
-      --header-bg: #000000;
-      --tag-bg: #111;
-      --tag-text: #00ff00;
-    }
-
-    [data-theme="radioactive"] {
-      --bg: #e6ffe6;
-      --text: #006600;
-      --primary: #33cc33;
-      --card-bg: #ccffcc;
-      --header-bg: #99ff99;
-      --tag-bg: #b3ffb3;
-      --tag-text: #004d00;
-    }
-
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #f0f0f0;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
     header {
-      background-color: var(--header-bg);
-      color: white;
-      padding: 15px;
+      background: #111;
+      padding: 10px;
       text-align: center;
       font-size: 24px;
       font-weight: bold;
+      border-bottom: 2px solid #555;
     }
-    main {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
+    section {
+      margin-top: 20px;
     }
-    select.theme-selector {
-      display: block;
-      margin: 10px auto;
-      padding: 5px;
+    input, textarea, select, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
     }
-    h2 {
-      color: var(--primary);
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 5px;
+    button {
+      background: #007acc;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005f9e;
     }
     .file-card {
-      background-color: var(--card-bg);
-      padding: 15px;
-      margin: 15px 0;
-      border-left: 5px solid var(--primary);
+      background: #2a2a2a;
+      padding: 10px;
+      margin-top: 10px;
       border-radius: 5px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .file-card h3 {
       margin: 0 0 5px;
     }
     .tag {
       display: inline-block;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      padding: 3px 6px;
+      background: #444;
+      color: #ccc;
+      padding: 2px 6px;
       margin-right: 4px;
       border-radius: 3px;
       font-size: 12px;
     }
-    .form-section {
-      background: var(--card-bg);
-      padding: 20px;
-      border-radius: 6px;
-      margin-top: 40px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    input, textarea, select, button {
-      padding: 10px;
-      margin: 8px 0;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      background-color: var(--bg);
-      color: var(--text);
-    }
-    button {
-      background-color: var(--primary);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm"></script>
 </head>
-<body data-theme="default">
-  <header>
-    TREDT Union File Directory
-     <a class="admin-link" href="https://tredt-file-manager-frontend.onrender.com/admin.html">🔐 Admin Login</a>
-    <select class="theme-selector" onchange="document.body.setAttribute('data-theme', this.value.toLowerCase())">
-      <option>Default</option>
-      <option>Dark</option>
-      <option>Synthwave</option>
-      <option>Minecraft</option>
-      <option>DOS</option>
-      <option>Radioactive</option>
-    </select>
-  </header>
-  <main>
-    <h2>Public & Private File List</h2>
-    <div id="fileList"></div>
+<body>
+  <header>TREDT Union File Manager</header>
 
-    <div class="form-section">
-      <h2>Request Private File</h2>
-      <form id="requestForm">
-        <input type="text" name="name" placeholder="Full Name" required />
-        <input type="text" name="state" placeholder="State (India ONLY)" required />
-        <input type="email" name="email" placeholder="Email Address" required />
-        <input type="text" name="title" placeholder="Title of Document" required />
-        <textarea name="reason" placeholder="Reason for Request" required></textarea>
-        <label><input type="checkbox" name="declaration" required /> I, do hereby submit these information to this Service with the best of my knowledge.</label>
-        <button type="submit">Submit Request</button>
-      </form>
-    </div>
-  </main>
+  <section>
+    <h2>Public Files</h2>
+    <div id="fileList">Loading files...</div>
+  </section>
 
-  <script>
-    const apiBase = 'https://tredt-information-services.onrender.com';
+  <script type="module">
+    const supabase = createClient(
+      'https://iifsgfipnximqzuhsjvj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw'
+    );
 
-    async function loadFiles() {
-      const res = await fetch(`${apiBase}/api/files/public`);
-      const files = await res.json();
-      const list = document.getElementById('fileList');
-      list.innerHTML = '';
-      files.forEach(file => {
+    const bucket = 'tredt-files';
+    const fileList = document.getElementById('fileList');
+
+    async function listFiles() {
+      const { data, error } = await supabase.storage.from(bucket).list('public', { limit: 100, offset: 0 });
+      if (error) {
+        fileList.innerHTML = '<p>Error loading files.</p>';
+        return;
+      }
+
+      fileList.innerHTML = '';
+      for (const file of data) {
+        const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/public/${file.name}`;
         const card = document.createElement('div');
         card.className = 'file-card';
         card.innerHTML = `
-          <h3>${file.title} (${file.type})</h3>
-          <p>${file.description}</p>
-          <div>${file.tags.split(',').map(tag => `<span class='tag'>${tag}</span>`).join(' ')}</div>
-          <small>Uploaded: ${new Date(file.uploaded_at).toLocaleString()}</small><br/>
-          ${file.type === 'public' ? `<a href="${apiBase}/api/files/download/${file.id}" target="_blank"><button>Download</button></a>` : '<em>This is a private file. Request required to access.</em>'}
+          <h3>${file.name}</h3>
+          <small>Size: ${file.metadata?.size || 'Unknown'} bytes</small><br/>
+          <a href="${fileUrl}" target="_blank"><button>Download</button></a>
         `;
-        list.appendChild(card);
-      });
+        fileList.appendChild(card);
+      }
     }
 
-    document.getElementById('requestForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        filename: form.title.value,
-        requester: `${form.name.value} (${form.state.value}) - ${form.email.value}`,
-        reason: form.reason.value
-      };
-
-      const res = await fetch(`${apiBase}/api/files/request`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      const result = await res.json();
-      alert(result.message || 'Your request has been submitted and is under review. You will receive the file via email within 2 to 3 days.');
-      form.reset();
-    });
-
-    window.onload = loadFiles;
-    <a class="admin-link" href="https://tredt-file-manager-frontend.onrender.com/admin.html">🔐 Admin Login</a>
+    listFiles();
   </script>
 </body>
 </html>
