@@ -5,7 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TREDT Union File Directory</title>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm"></script>
+  <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm";
+  const supabase = createClient(
+    "https://iifsgfipnximqzuhsjvj.supabase.co",
+    "YOUR_PUBLIC_ANON_KEY"
+  );
+
+  // your listFiles() logic here
+</script>
   <style>
     :root {
       --bg: #ffffff;
@@ -206,5 +214,48 @@
     listFiles("public", "publicFiles", true);
     listFiles("private", "privateFiles", false);
   </script>
+  <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm";
+
+  const supabase = createClient(
+    "https://iifsgfipnximqzuhsjvj.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw"
+  );
+
+  const bucket = 'tredt-files';
+
+  async function listFiles(folder, containerId, allowDownload = true) {
+    const container = document.getElementById(containerId);
+    const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 100 });
+
+    if (error || !data) {
+      container.innerHTML = `<p>Error loading ${folder} files.</p>`;
+      console.error(error);
+      return;
+    }
+
+    if (data.length === 0) {
+      container.innerHTML = `<p>No files in ${folder}.</p>`;
+      return;
+    }
+
+    container.innerHTML = '';
+    data.forEach(file => {
+      const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${folder}/${file.name}`;
+      const card = document.createElement('div');
+      card.className = 'file-card';
+      card.innerHTML = `
+        <h3>${file.name}</h3>
+        ${allowDownload
+          ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>`
+          : `<button onclick="requestFile('${file.name}')">Request Access</button>`}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  listFiles('public', 'publicFiles', true);
+  listFiles('private', 'privateFiles', false);
+</script>
 </body>
 </html>
