@@ -67,37 +67,43 @@
     <div id="fileList">Loading files...</div>
   </section>
 
-  <script type="module">
-    const supabase = window.supabase.createClient(
-      'https://iifsgfipnximqzuhsjvj.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw'
-    );
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/dist/umd/supabase.min.js"></script>
+<script>
+  const supabase = window.supabase.createClient(
+    'https://iifsgfipnximqzuhsjvj.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZnNnZmlwbnhpbXF6dWhzanZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTcyODU5OSwiZXhwIjoyMDY3MzA0NTk5fQ.szvcpstqkCUqXqb_Uaxf0Xu5a8_o1OnUGxPY6snxQtw'
+  );
 
-    const bucket = 'tredt-files';
-    const fileList = document.getElementById('fileList');
+  const bucket = 'tredt-files';
+  const fileList = document.getElementById('fileList');
 
-    async function listFiles() {
-      const { data, error } = await supabase.storage.from(bucket).list('public', { limit: 100, offset: 0 });
-      if (error) {
-        fileList.innerHTML = '<p>Error loading files.</p>';
-        return;
-      }
+  async function listFiles() {
+    const { data, error } = await supabase.storage.from(bucket).list('public', {
+      limit: 100,
+      offset: 0
+    });
 
-      fileList.innerHTML = '';
-      for (const file of data) {
-        const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/public/${file.name}`;
-        const card = document.createElement('div');
-        card.className = 'file-card';
-        card.innerHTML = `
-          <h3>${file.name}</h3>
-          <small>Size: ${file.metadata?.size || 'Unknown'} bytes</small><br/>
-          <a href="${fileUrl}" target="_blank"><button>Download</button></a>
-        `;
-        fileList.appendChild(card);
-      }
+    if (error) {
+      fileList.innerHTML = '<p>Error loading files.</p>';
+      console.error(error);
+      return;
     }
 
-    listFiles();
-  </script>
+    fileList.innerHTML = '';
+    for (const file of data) {
+      const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/public/${file.name}`;
+      const card = document.createElement('div');
+      card.className = 'file-card';
+      card.innerHTML = `
+        <h3>${file.name}</h3>
+        <small>Size: ${file.metadata?.size || 'Unknown'} bytes</small><br/>
+        <a href="${fileUrl}" target="_blank"><button>Download</button></a>
+      `;
+      fileList.appendChild(card);
+    }
+  }
+
+  listFiles();
+</script>
 </body>
 </html>
