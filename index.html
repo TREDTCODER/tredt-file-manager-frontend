@@ -111,7 +111,7 @@
       background: var(--card-bg);
       padding: 20px;
       border-radius: 6px;
-      margin-bottom: 40px;
+      margin-top: 40px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     input, textarea, select, button {
@@ -187,24 +187,38 @@
     const bucket = 'tredt-files';
 
     async function listFiles(folder, containerId, showDownload = true) {
-      const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 200 });
       const container = document.getElementById(containerId);
-      if (error || !data) {
-        container.innerHTML = '<p>Error loading files.</p>';
+      container.innerHTML = '<p>Loading...</p>';
+
+      const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 200 });
+      console.log("Trying to list folder:", folder);
+      console.log("Data:", data);
+      console.log("Error:", error);
+
+      if (error) {
+        console.error(`❌ Error listing ${folder}:`, error);
+        container.innerHTML = `<p>Error loading ${folder} files.</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = `<p>No files in ${folder}.</p>`;
         return;
       }
 
       container.innerHTML = '';
       for (const file of data) {
-        const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${folder}/${file.name}`;
-        const card = document.createElement('div');
-        card.className = 'file-card';
-        card.innerHTML = `
-          <h3>${file.name}</h3>
-          ${showDownload ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>` : 
-            `<button onclick="requestFile('${file.name}')">Request Access</button>`}
-        `;
-        container.appendChild(card);
+        if (file.name && !file.metadata) { // skip folders
+          const fileUrl = `https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${folder}/${file.name}`;
+          const card = document.createElement('div');
+          card.className = 'file-card';
+          card.innerHTML = `
+            <h3>${file.name}</h3>
+            ${showDownload ? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>` :
+              `<button onclick="requestFile('${file.name}')">Request Access</button>`}
+          `;
+          container.appendChild(card);
+        }
       }
     }
 
@@ -226,9 +240,6 @@
       }
     }
 
-    listFiles('public', 'publicFiles', true);
-    listFiles('private', 'privateFiles', false);
-
     document.getElementById('requestForm').addEventListener('submit', async e => {
       e.preventDefault();
       const form = e.target;
@@ -248,6 +259,9 @@
       alert(result.message || 'Your request has been submitted and is under review. You will receive the file via email within 2 to 3 days.');
       form.reset();
     });
+
+    listFiles('public', 'publicFiles', true);
+    listFiles('private', 'privateFiles', false);
   </script>
 </body>
 </html>
