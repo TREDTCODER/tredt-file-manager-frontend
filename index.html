@@ -107,15 +107,6 @@
     .file-card h3 {
       margin: 0 0 5px;
     }
-    .tag {
-      display: inline-block;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      padding: 3px 6px;
-      margin-right: 4px;
-      border-radius: 3px;
-      font-size: 12px;
-    }
     .form-section {
       background: var(--card-bg);
       padding: 20px;
@@ -198,8 +189,8 @@
     async function listFiles(folder, containerId, showDownload = true) {
       const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: 100 });
       const container = document.getElementById(containerId);
-      if (error || !data || data.length === 0) {
-        container.innerHTML = `<p>No files in ${folder}.</p>`;
+      if (error || !data) {
+        container.innerHTML = '<p>Error loading files.</p>';
         return;
       }
 
@@ -228,7 +219,11 @@
         body: JSON.stringify({ filename, requester, reason })
       });
       const result = await response.json();
-      alert(result.message || 'Your request has been submitted. You will receive a response via email.');
+      if (result.message) {
+        alert("📩 Email sent! Your request is under review. You will receive the file in 2–3 days or less.");
+      } else {
+        alert("❌ Failed to send request: " + result.error);
+      }
     }
 
     listFiles('public', 'publicFiles', true);
