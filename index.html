@@ -203,21 +203,24 @@
     renderFileList(privateFiles, 'privateFiles', false, 'private');
   }
 
-  async function requestFile(filename) {
-    const requester = prompt("Enter your email:");
-    const reason = prompt("Why do you want this file?");
-    if (!requester || !reason) return alert("Request cancelled.");
+ window.requestFile = async function requestFile(filename) {
+  const requester = prompt("Enter your email:");
+  const reason = prompt("Why do you want this file?");
+  if (!requester || !reason) return alert("Request cancelled.");
 
-    const response = await fetch('https://tredt-information-services.onrender.com/api/files/request', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename, requester, reason })
-    });
+  const response = await fetch('https://tredt-information-services.onrender.com/api/files/request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename, requester, reason })
+  });
 
-    const result = await response.json();
-    alert(result.message || 'Request submitted.');
+  const result = await response.json();
+  if (result.message) {
+    alert("📩 Email sent! Your request is under review. You will receive the file in 2–3 days or less.");
+  } else {
+    alert("❌ Failed to send request: " + result.error);
   }
-
+}
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('requestForm').addEventListener('submit', async e => {
       e.preventDefault();
