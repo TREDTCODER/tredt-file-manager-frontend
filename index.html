@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TREDT Union File Directory</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+/* =========================================================
+   CSS / THEMES - existing theme variables preserved exactly
+   ========================================================= */
 :root{
 --bg:#ffffff;
 --text:#333;
@@ -68,88 +71,873 @@
 --tag-text:#004d00;
 }
 
+/* =========================================================
+   CSS / BASE
+   ========================================================= */
+*{
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
 body{
 background-color:var(--bg);
 color:var(--text);
-font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+font-family:Inter,'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+margin:0;
+min-height:100vh;
+padding:0;
+}
+
+a{
+color:inherit;
+text-decoration:none;
+}
+
+button,
+input,
+select{
+font:inherit;
+}
+
+button,
+a,
+select,
+input{
+outline-offset:3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+summary:focus-visible{
+outline:3px solid color-mix(in srgb,var(--primary) 60%,white);
+}
+
+button{
+align-items:center;
+border:none;
+border-radius:8px;
+cursor:pointer;
+display:inline-flex;
+font-size:14px;
+font-weight:700;
+gap:8px;
+justify-content:center;
+line-height:1;
+min-height:40px;
+padding:10px 14px;
+transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease,background-color .18s ease;
+}
+
+button:hover{
+opacity:.92;
+transform:translateY(-1px);
+}
+
+.app-shell{
+display:grid;
+grid-template-columns:280px minmax(0,1fr);
+min-height:100vh;
+}
+
+.sr-only{
+height:1px;
+margin:-1px;
+overflow:hidden;
+position:absolute;
+width:1px;
+clip:rect(0,0,0,0);
+}
+
+/* =========================================================
+   CSS / SIDEBAR
+   ========================================================= */
+.sidebar{
+background:linear-gradient(180deg,var(--header-bg),color-mix(in srgb,var(--header-bg) 72%,black));
+border-right:1px solid color-mix(in srgb,var(--primary) 24%,transparent);
+color:white;
+display:flex;
+flex-direction:column;
+gap:22px;
+min-height:100vh;
+padding:22px 18px;
+position:sticky;
+top:0;
+z-index:30;
+}
+
+.brand-block{
+align-items:center;
+display:flex;
+gap:12px;
+min-height:52px;
+}
+
+.brand-mark{
+align-items:center;
+background:rgba(255,255,255,.16);
+border:1px solid rgba(255,255,255,.2);
+border-radius:12px;
+display:grid;
+font-size:24px;
+height:48px;
+place-items:center;
+width:48px;
+}
+
+.brand-text strong{
+display:block;
+font-size:15px;
+letter-spacing:.02em;
+}
+
+.brand-text span{
+display:block;
+font-size:12px;
+opacity:.78;
+padding-top:3px;
+}
+
+.sidebar-nav{
+display:flex;
+flex:1;
+flex-direction:column;
+gap:6px;
+overflow:auto;
+padding-right:4px;
+}
+
+.nav-link{
+align-items:center;
+border-radius:10px;
+color:white;
+display:flex;
+font-size:14px;
+font-weight:700;
+gap:10px;
+padding:11px 12px;
+transition:background-color .18s ease,transform .18s ease;
+}
+
+.nav-link:hover,
+.nav-link.active{
+background:rgba(255,255,255,.16);
+transform:translateX(2px);
+}
+
+.nav-link .icon{
+font-size:17px;
+width:22px;
+}
+
+.sidebar-footer{
+background:rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.16);
+border-radius:12px;
+font-size:12px;
+line-height:1.5;
+padding:12px;
+}
+
+/* =========================================================
+   CSS / TOP BAR
+   ========================================================= */
+.content-shell{
+display:flex;
+flex-direction:column;
+min-width:0;
+}
+
+header.topbar{
+background-color:var(--header-bg);
+box-shadow:0 8px 30px rgba(0,0,0,.12);
+color:white;
+padding:16px 24px;
+position:sticky;
+top:0;
+z-index:20;
+}
+
+.topbar-grid{
+align-items:center;
+display:grid;
+gap:14px;
+grid-template-columns:auto minmax(180px,1fr) auto auto auto;
+}
+
+.mobile-menu{
+background:rgba(255,255,255,.16);
+color:white;
+display:none;
+width:44px;
+}
+
+.top-title h1{
+font-size:20px;
+line-height:1.2;
+margin:0;
+}
+
+.top-title p{
+font-size:12px;
+margin:4px 0 0;
+opacity:.8;
+}
+
+.search-wrap{
+position:relative;
+}
+
+.search-wrap span{
+left:14px;
+opacity:.7;
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+}
+
+.search-input{
+background:rgba(255,255,255,.98);
+border:1px solid rgba(255,255,255,.4);
+border-radius:999px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+color:#1f2937;
+min-height:44px;
+padding:0 18px 0 42px;
+width:100%;
+}
+
+select.theme-selector{
+appearance:none;
+background:rgba(255,255,255,.98);
+border:1px solid rgba(255,255,255,.45);
+border-radius:999px;
+color:#1f2937;
+cursor:pointer;
+display:block;
+font-weight:700;
+min-height:44px;
+padding:0 34px 0 14px;
+}
+
+.account-area{
+align-items:center;
+display:flex;
+gap:10px;
+justify-content:flex-end;
+min-width:0;
+}
+
+.account-avatar{
+align-items:center;
+background:rgba(255,255,255,.18);
+border:1px solid rgba(255,255,255,.22);
+border-radius:50%;
+display:grid;
+font-weight:800;
+height:40px;
+place-items:center;
+width:40px;
+}
+
+.account-copy{
+font-size:12px;
+line-height:1.25;
+}
+
+.account-copy strong{
+display:block;
+font-size:13px;
+}
+
+.refresh-button{
+background:rgba(255,255,255,.16);
+color:white;
+width:44px;
+}
+
+.breadcrumbs{
+align-items:center;
+display:flex;
+flex-wrap:wrap;
+font-size:12px;
+gap:8px;
+margin-top:12px;
+opacity:.86;
+}
+
+/* =========================================================
+   CSS / MAIN LAYOUT
+   ========================================================= */
+main{
+display:flex;
+flex-direction:column;
+gap:28px;
+padding:28px;
+}
+
+.hero-panel{
+background:
+linear-gradient(135deg,color-mix(in srgb,var(--primary) 14%,transparent),transparent 42%),
+var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 18%,transparent);
+border-radius:16px;
+box-shadow:0 16px 40px rgba(15,23,42,.08);
+padding:28px;
+}
+
+.eyebrow{
+color:var(--primary);
+font-size:12px;
+font-weight:800;
+letter-spacing:.08em;
+margin:0 0 8px;
+text-transform:uppercase;
+}
+
+.hero-panel h2{
+color:var(--text);
+font-size:34px;
+line-height:1.08;
+margin:0;
+}
+
+.hero-panel p{
+color:color-mix(in srgb,var(--text) 74%,transparent);
+line-height:1.65;
+margin:14px 0 0;
+max-width:760px;
+}
+
+.hero-actions{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+margin-top:22px;
+}
+
+.primary-action{
+background-color:var(--primary);
+color:white;
+}
+
+.secondary-action{
+background-color:var(--tag-bg);
+color:var(--tag-text);
+}
+
+.section-heading{
+align-items:end;
+display:flex;
+gap:16px;
+justify-content:space-between;
+margin-bottom:14px;
+}
+
+.section-heading h2{
+color:var(--text);
+font-size:22px;
+line-height:1.2;
+margin:0;
+}
+
+.section-heading p{
+color:color-mix(in srgb,var(--text) 64%,transparent);
+font-size:13px;
+line-height:1.5;
+margin:6px 0 0;
+}
+
+.status-text{
+color:color-mix(in srgb,var(--text) 64%,transparent);
+font-size:13px;
+}
+
+/* =========================================================
+   CSS / DASHBOARD
+   ========================================================= */
+.stats-grid{
+display:grid;
+gap:16px;
+grid-template-columns:repeat(4,minmax(0,1fr));
+}
+
+.stat-card{
+background:var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 16%,transparent);
+border-radius:14px;
+box-shadow:0 10px 24px rgba(15,23,42,.06);
+min-height:116px;
+padding:18px;
+}
+
+.stat-card span{
+color:color-mix(in srgb,var(--text) 64%,transparent);
+display:block;
+font-size:12px;
+font-weight:800;
+letter-spacing:.05em;
+text-transform:uppercase;
+}
+
+.stat-card strong{
+color:var(--primary);
+display:block;
+font-size:28px;
+line-height:1;
+margin-top:14px;
+}
+
+.stat-card small{
+color:color-mix(in srgb,var(--text) 62%,transparent);
+display:block;
+font-size:12px;
+margin-top:10px;
+}
+
+/* =========================================================
+   CSS / FILTERS AND LIBRARY
+   ========================================================= */
+.filters-bar{
+align-items:center;
+background:var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 14%,transparent);
+border-radius:14px;
+display:grid;
+gap:12px;
+grid-template-columns:repeat(5,minmax(130px,1fr));
+padding:14px;
+}
+
+.filters-bar label{
+display:flex;
+flex-direction:column;
+font-size:11px;
+font-weight:800;
+gap:6px;
+letter-spacing:.04em;
+text-transform:uppercase;
+}
+
+.filters-bar select{
+background:var(--bg);
+border:1px solid color-mix(in srgb,var(--primary) 18%,transparent);
+border-radius:8px;
+color:var(--text);
+min-height:40px;
+padding:8px 10px;
+}
+
+.category-stack{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.category-section{
+background:var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 15%,transparent);
+border-radius:16px;
+box-shadow:0 10px 26px rgba(15,23,42,.06);
+overflow:hidden;
+}
+
+.category-section summary{
+align-items:center;
+cursor:pointer;
+display:grid;
+gap:14px;
+grid-template-columns:auto minmax(0,1fr) auto;
+list-style:none;
+padding:18px;
+}
+
+.category-section summary::-webkit-details-marker{
+display:none;
+}
+
+.category-icon{
+align-items:center;
+background:color-mix(in srgb,var(--primary) 12%,transparent);
+border-radius:12px;
+color:var(--primary);
+display:grid;
+font-size:24px;
+height:48px;
+place-items:center;
+width:48px;
+}
+
+.category-title h3{
+font-size:17px;
+line-height:1.2;
+margin:0;
+}
+
+.category-title p{
+color:color-mix(in srgb,var(--text) 60%,transparent);
+font-size:13px;
+line-height:1.5;
+margin:5px 0 0;
+}
+
+.category-actions{
+align-items:center;
+display:flex;
+gap:12px;
+}
+
+.count-pill,
+.badge{
+background:var(--tag-bg);
+border-radius:999px;
+color:var(--tag-text);
+display:inline-flex;
+font-size:12px;
+font-weight:800;
+gap:6px;
+padding:7px 10px;
+white-space:nowrap;
+}
+
+.chevron{
+color:var(--primary);
+font-size:18px;
+transition:transform .18s ease;
+}
+
+.category-section[open] .chevron{
+transform:rotate(180deg);
+}
+
+.document-grid{
+animation:fadeIn .22s ease both;
+display:grid;
+gap:14px;
+grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+padding:0 18px 18px;
+}
+
+.empty-state{
+background:color-mix(in srgb,var(--tag-bg) 62%,transparent);
+border:1px dashed color-mix(in srgb,var(--primary) 24%,transparent);
+border-radius:12px;
+color:color-mix(in srgb,var(--text) 70%,transparent);
+grid-column:1/-1;
+line-height:1.55;
+margin:0;
+padding:20px;
+text-align:center;
+}
+
+/* =========================================================
+   CSS / FILE CARDS
+   ========================================================= */
+.file-card{
+background-color:var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 15%,transparent);
+border-left:5px solid var(--primary);
+border-radius:12px;
+box-shadow:0 8px 20px rgba(15,23,42,.06);
+display:flex;
+flex-direction:column;
+gap:14px;
+min-height:224px;
+padding:16px;
+transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+
+.file-card:hover{
+border-color:color-mix(in srgb,var(--primary) 34%,transparent);
+box-shadow:0 18px 36px rgba(15,23,42,.12);
+transform:translateY(-3px);
+}
+
+.file-top{
+align-items:flex-start;
+display:flex;
+gap:12px;
+}
+
+.doc-icon{
+align-items:center;
+background:color-mix(in srgb,var(--primary) 12%,transparent);
+border-radius:12px;
+color:var(--primary);
+display:grid;
+font-size:23px;
+height:46px;
+place-items:center;
+width:46px;
+}
+
+.file-card h3{
+font-size:15px;
+line-height:1.35;
+margin:0;
+overflow-wrap:anywhere;
+}
+
+.file-meta{
+color:color-mix(in srgb,var(--text) 62%,transparent);
+display:grid;
+font-size:12px;
+gap:7px;
+line-height:1.35;
+margin-top:auto;
+}
+
+.file-actions{
+display:grid;
+gap:8px;
+grid-template-columns:1fr 1fr auto;
+}
+
+.file-actions .preview-button,
+.file-actions .download-button{
+background-color:var(--primary);
+color:white;
+}
+
+.file-actions .more-button{
+background:var(--tag-bg);
+color:var(--tag-text);
+width:42px;
+}
+
+.visibility-public{
+background:color-mix(in srgb,var(--primary) 16%,var(--tag-bg));
+color:var(--tag-text);
+}
+
+.visibility-private{
+background:var(--tag-bg);
+color:var(--tag-text);
+}
+
+.quick-grid{
+display:grid;
+gap:14px;
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.compact-list{
+background:var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 15%,transparent);
+border-radius:16px;
+box-shadow:0 10px 26px rgba(15,23,42,.06);
+overflow:hidden;
+}
+
+.compact-list ul{
+display:flex;
+flex-direction:column;
+gap:0;
+list-style:none;
 margin:0;
 padding:0;
 }
 
-header{
-background-color:var(--header-bg);
-color:white;
-padding:15px;
-text-align:center;
-font-size:24px;
-font-weight:bold;
+.compact-list li{
+align-items:center;
+border-bottom:1px solid color-mix(in srgb,var(--primary) 10%,transparent);
+display:grid;
+gap:12px;
+grid-template-columns:auto minmax(0,1fr) auto;
+padding:14px 16px;
 }
 
+.compact-list li:last-child{
+border-bottom:none;
+}
+
+.compact-list strong{
+display:block;
+font-size:14px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.compact-list span{
+color:color-mix(in srgb,var(--text) 62%,transparent);
+font-size:12px;
+}
+
+.private-panel{
+background:var(--card-bg);
+border:1px solid color-mix(in srgb,var(--primary) 15%,transparent);
+border-radius:16px;
+box-shadow:0 10px 26px rgba(15,23,42,.06);
+padding:18px;
+}
+
+.footer{
+border-top:1px solid color-mix(in srgb,var(--primary) 13%,transparent);
+color:color-mix(in srgb,var(--text) 62%,transparent);
+display:flex;
+flex-wrap:wrap;
+font-size:12px;
+gap:12px;
+justify-content:space-between;
+padding:22px 28px 28px;
+}
+
+.modal{
+align-items:center;
+background:rgba(15,23,42,.64);
+display:none;
+inset:0;
+justify-content:center;
+padding:24px;
+position:fixed;
+z-index:60;
+}
+
+.modal.open{
+display:flex;
+}
+
+.modal-card{
+background:var(--card-bg);
+border-radius:16px;
+box-shadow:0 24px 80px rgba(0,0,0,.32);
+display:flex;
+flex-direction:column;
+height:min(82vh,860px);
+max-width:1040px;
+overflow:hidden;
+width:min(96vw,1040px);
+}
+
+.modal-head{
+align-items:center;
+border-bottom:1px solid color-mix(in srgb,var(--primary) 12%,transparent);
+display:flex;
+gap:16px;
+justify-content:space-between;
+padding:14px 16px;
+}
+
+.modal-head strong{
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.modal iframe{
+background:white;
+border:0;
+flex:1;
+width:100%;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(8px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+@media (max-width:1180px){
+.stats-grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.hero-panel,
+.quick-grid{
+grid-template-columns:1fr;
+}
+}
+
+@media (max-width:900px){
+.app-shell{
+grid-template-columns:1fr;
+}
+.sidebar{
+bottom:0;
+box-shadow:24px 0 80px rgba(0,0,0,.24);
+max-width:320px;
+position:fixed;
+top:0;
+transform:translateX(-105%);
+transition:transform .22s ease;
+width:84vw;
+}
+body.sidebar-open .sidebar{
+transform:translateX(0);
+}
+.mobile-menu{
+display:inline-flex;
+}
+.topbar-grid{
+grid-template-columns:auto minmax(0,1fr) auto;
+}
+.search-wrap{
+grid-column:1/-1;
+order:5;
+}
+.account-area{
+display:none;
+}
 main{
 padding:20px;
-max-width:900px;
-margin:auto;
+}
+.filters-bar{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
 }
 
-select.theme-selector{
-display:block;
-margin:10px auto;
-padding:5px;
+@media (max-width:640px){
+header.topbar{
+padding:14px;
 }
-
-h2{
-color:var(--primary);
-border-bottom:2px solid #ccc;
-padding-bottom:5px;
+main{
+gap:22px;
+padding:16px;
 }
-
-.file-card{
-background-color:var(--card-bg);
-padding:15px;
-margin:15px 0;
-border-left:5px solid var(--primary);
-border-radius:5px;
-box-shadow:0 1px 3px rgba(0,0,0,0.1);
+.hero-panel{
+padding:20px;
 }
-
-.file-card h3{
-margin:0 0 5px;
+.hero-panel h2{
+font-size:26px;
 }
-
-button{
-padding:10px;
-margin:8px 0;
+.upload-row,
+.filters-bar,
+.stats-grid{
+grid-template-columns:1fr;
+}
+.section-heading{
+align-items:flex-start;
+flex-direction:column;
+}
+.category-section summary{
+grid-template-columns:auto minmax(0,1fr);
+}
+.category-actions{
+grid-column:1/-1;
+justify-content:space-between;
+}
+.document-grid{
+grid-template-columns:1fr;
+}
+.file-actions{
+grid-template-columns:1fr;
+}
+.file-actions .more-button{
 width:100%;
-border:none;
-border-radius:4px;
-font-size:14px;
-background-color:var(--primary);
-color:white;
-font-weight:bold;
-cursor:pointer;
 }
-
-button:hover{
-opacity:0.9;
+.footer{
+padding:18px 16px 24px;
 }
-
-.admin-link{
-display:block;
-text-align:center;
-margin:20px 0;
-font-weight:bold;
-color:var(--primary);
-}
-
-.request-button{
-display:block;
-text-align:center;
-margin:20px auto;
-max-width:250px;
 }
 </style>
 
 <script type="module">
+/* =========================================================
+   JAVASCRIPT / SUPABASE - existing integration preserved
+   ========================================================= */
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.5/+esm';
 
 const supabase=createClient(
@@ -158,6 +946,48 @@ const supabase=createClient(
 );
 
 const bucket='tredt-files';
+const publicBaseUrl=`https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}`;
+const requestAccessUrl='https://tredtunion.odoo.com/contactus';
+
+const categories=[
+{key:'acts',title:'Acts',icon:'📜',description:'Official acts and statutory records.'},
+{key:'laws',title:'Laws',icon:'⚖',description:'Legal documents, rules, and policy references.'},
+{key:'constitutions',title:'Constitutions',icon:'📖',description:'Constitutional documents and governing frameworks.'},
+{key:'charters',title:'Charters',icon:'📚',description:'Charters, commitments, and organizational mandates.'},
+{key:'declarations',title:'Declarations',icon:'📄',description:'Published declarations and public statements.'},
+{key:'drafts',title:'Drafts',icon:'📝',description:'Draft documents and works in progress.'},
+{key:'emails',title:'Emails',icon:'✉',description:'Email records and correspondence archives.'},
+{key:'tax-returns',title:'Tax Returns',icon:'💰',description:'Tax filing documents and financial returns.'},
+{key:'letters',title:'Letters',icon:'📬',description:'Letters, notices, and formal correspondence.'}
+];
+
+const categoryAliases={
+act:'acts',
+acts:'acts',
+law:'laws',
+laws:'laws',
+constitution:'constitutions',
+constitutions:'constitutions',
+charter:'charters',
+charters:'charters',
+declaration:'declarations',
+declarations:'declarations',
+draft:'drafts',
+drafts:'drafts',
+email:'emails',
+emails:'emails',
+mail:'emails',
+tax:'tax-returns',
+'tax return':'tax-returns',
+'tax returns':'tax-returns',
+'tax-return':'tax-returns',
+'tax-returns':'tax-returns',
+letter:'letters',
+letters:'letters'
+};
+
+let allDocuments=[];
+let currentSearch='';
 
 async function listFilesRecursively(path='',allFiles=[]){
 const {data,error}=await supabase.storage.from(bucket).list(path,{limit:100});
@@ -171,7 +1001,14 @@ for(const item of data){
 const itemPath=path?`${path}/${item.name}`:item.name;
 
 if(item.metadata){
-allFiles.push(itemPath);
+allFiles.push({
+path:itemPath,
+name:item.name,
+metadata:item.metadata,
+updated_at:item.updated_at,
+created_at:item.created_at,
+last_accessed_at:item.last_accessed_at
+});
 }else{
 await listFilesRecursively(itemPath,allFiles);
 }
@@ -182,56 +1019,453 @@ return allFiles;
 
 function renderFileList(files,containerId,showDownload=true,type=''){
 const container=document.getElementById(containerId);
+if(!container)return;
 
 if(!files.length){
-container.innerHTML=`<p>No ${type} files available.</p>`;
+container.innerHTML=`<p class="empty-state">No ${type} files available.</p>`;
 return;
 }
 
 container.innerHTML='';
 
-for(const path of files){
-
-const name=path.split('/').pop();
-const fileUrl=`https://iifsgfipnximqzuhsjvj.supabase.co/storage/v1/object/public/${bucket}/${path}`;
-
-const card=document.createElement('div');
-card.className='file-card';
-
-card.innerHTML=`
-<h3>${name}</h3>
-${showDownload
-? `<a href="${fileUrl}" target="_blank"><button>Download</button></a>`
-: `<a href="https://tredtunion.odoo.com/contactus"><button>Request Access</button></a>`
-}
-`;
-
+for(const file of files){
+const doc=typeof file==='string'?createDocumentFromPath(file):normalizeFile(file);
+const card=createFileCard(doc,showDownload);
 container.appendChild(card);
 }
 }
 
 async function listFilesByType(){
+setLoadingState(true);
+const rawFiles=await listFilesRecursively('');
+allDocuments=rawFiles.map(normalizeFile);
 
-const allFiles=await listFilesRecursively('');
-
-const publicFiles=allFiles.filter(f=>f.startsWith('public/'));
-const privateFiles=allFiles.filter(f=>f.startsWith('private/'));
+const publicFiles=allDocuments.filter(f=>f.visibility==='public');
+const privateFiles=allDocuments.filter(f=>f.visibility==='private');
 
 renderFileList(publicFiles,'publicFiles',true,'public');
 renderFileList(privateFiles,'privateFiles',false,'private');
+renderInterface();
+setLoadingState(false);
+}
+
+function createDocumentFromPath(path){
+const name=path.split('/').pop();
+return normalizeFile({path,name,metadata:{}});
+}
+
+function normalizeFile(file){
+const path=file.path||file;
+const name=file.name||path.split('/').pop();
+const parts=path.split('/').filter(Boolean);
+const visibility=parts[0]==='private'?'private':'public';
+const categoryKey=detectCategory(parts,name);
+const category=categories.find(item=>item.key===categoryKey)||categories[categories.length-1];
+const extension=(name.includes('.')?name.split('.').pop():'file').toLowerCase();
+const modified=file.updated_at||file.created_at||file.last_accessed_at||null;
+const size=file.metadata?.size||0;
+const description=`${category.title} ${visibility} document ${name}`.toLowerCase();
+
+return {
+path,
+name,
+visibility,
+categoryKey:category.key,
+categoryTitle:category.title,
+categoryIcon:category.icon,
+extension,
+modified,
+size,
+description,
+tags:[category.key,category.title,visibility,extension,path].join(' ').toLowerCase(),
+url:`${publicBaseUrl}/${encodeURIComponent(path).replaceAll('%2F','/')}`,
+featured:isFeatured(name,path),
+raw:file
+};
+}
+
+function detectCategory(parts,name){
+const searchable=[...parts,name.toLowerCase().replace(/\.[^/.]+$/,'')].join(' ').toLowerCase().replace(/[_/]+/g,' ');
+
+for(const [alias,key] of Object.entries(categoryAliases)){
+if(searchable.includes(alias))return key;
+}
+
+const likelyFolder=parts[1]||parts[0]||'';
+return categoryAliases[likelyFolder.toLowerCase()]||'letters';
+}
+
+function isFeatured(name,path){
+const text=`${name} ${path}`.toLowerCase();
+return text.includes('featured')||text.includes('pinned')||text.includes('important')||text.includes('latest');
+}
+
+function renderInterface(){
+const docs=getFilteredDocuments();
+renderStats();
+renderCategorySections(docs);
+renderQuickLists();
+renderPrivateDocuments();
+populateFilterOptions();
+updateStatusText(docs.length);
+}
+
+function getFilteredDocuments(){
+const category=document.getElementById('categoryFilter')?.value||'all';
+const visibility=document.getElementById('visibilityFilter')?.value||'all';
+const fileType=document.getElementById('fileTypeFilter')?.value||'all';
+const sort=document.getElementById('sortFilter')?.value||'newest';
+const query=currentSearch.trim().toLowerCase();
+
+let docs=allDocuments.filter(doc=>{
+const matchesSearch=!query||[doc.name,doc.categoryTitle,doc.tags,doc.description,doc.visibility].join(' ').toLowerCase().includes(query);
+const matchesCategory=category==='all'||doc.categoryKey===category;
+const matchesVisibility=visibility==='all'||doc.visibility===visibility;
+const matchesType=fileType==='all'||doc.extension===fileType;
+return matchesSearch&&matchesCategory&&matchesVisibility&&matchesType;
+});
+
+docs=[...docs].sort((a,b)=>{
+if(sort==='oldest')return dateValue(a.modified)-dateValue(b.modified);
+if(sort==='az')return a.name.localeCompare(b.name);
+if(sort==='za')return b.name.localeCompare(a.name);
+return dateValue(b.modified)-dateValue(a.modified);
+});
+
+return docs;
+}
+
+function renderStats(){
+const publicDocs=allDocuments.filter(doc=>doc.visibility==='public');
+const privateDocs=allDocuments.filter(doc=>doc.visibility==='private');
+const categoryCounts=categories.map(category=>({
+title:category.title,
+count:allDocuments.filter(doc=>doc.categoryKey===category.key).length
+})).sort((a,b)=>b.count-a.count);
+const largestCategory=categoryCounts[0]?.count?categoryCounts[0].title:'None';
+const lastUpdated=[...allDocuments].sort((a,b)=>dateValue(b.modified)-dateValue(a.modified))[0]?.modified;
+const recentUploads=allDocuments.filter(doc=>dateValue(doc.modified)>Date.now()-1000*60*60*24*30).length;
+const storageUsed=allDocuments.reduce((sum,doc)=>sum+(doc.size||0),0);
+
+const stats=[
+['Public Documents',publicDocs.length,'Open library files'],
+['Private Documents',privateDocs.length,'Protected request-only files'],
+['Categories',categories.filter(category=>categoryCounts.find(item=>item.title===category.title)?.count).length,'Active document groups'],
+['Storage Used',formatBytes(storageUsed),'Indexed from Supabase'],
+['Total Files',allDocuments.length,'All visible storage items'],
+['Last Updated',lastUpdated?formatDate(lastUpdated):'Not available','Newest indexed file'],
+['Largest Category',largestCategory,'Highest document count'],
+['Recent Uploads',recentUploads,'Updated in last 30 days']
+];
+
+const grid=document.getElementById('statsGrid');
+grid.innerHTML=stats.map(([label,value,note])=>`
+<article class="stat-card">
+<span>${label}</span>
+<strong>${value}</strong>
+<small>${note}</small>
+</article>
+`).join('');
+}
+
+function renderCategorySections(docs){
+const stack=document.getElementById('categoryStack');
+stack.innerHTML='';
+
+for(const category of categories){
+const categoryDocs=docs.filter(doc=>doc.categoryKey===category.key&&doc.visibility==='public');
+const section=document.createElement('details');
+section.className='category-section';
+section.id=category.key;
+section.open=categoryDocs.length>0;
+section.innerHTML=`
+<summary aria-label="${category.title} document section">
+<span class="category-icon" aria-hidden="true">${category.icon}</span>
+<span class="category-title">
+<h3>${category.title}</h3>
+<p>${category.description}</p>
+</span>
+<span class="category-actions">
+<span class="count-pill">${categoryDocs.length} documents</span>
+<span class="chevron" aria-hidden="true">⌄</span>
+</span>
+</summary>
+<div class="document-grid" data-category-grid="${category.key}"></div>
+`;
+const grid=section.querySelector('.document-grid');
+
+if(categoryDocs.length){
+const fragment=document.createDocumentFragment();
+categoryDocs.forEach(doc=>fragment.appendChild(createFileCard(doc,true)));
+grid.appendChild(fragment);
+}else{
+grid.innerHTML='<p class="empty-state">No matching public documents in this category.</p>';
+}
+
+stack.appendChild(section);
+}
+}
+
+function createFileCard(doc,showDownload=true){
+const card=document.createElement('article');
+card.className='file-card';
+card.dataset.path=doc.path;
+card.dataset.category=doc.categoryKey;
+card.dataset.visibility=doc.visibility;
+card.innerHTML=`
+<div class="file-top">
+<span class="doc-icon" aria-hidden="true">${getFileIcon(doc.extension)}</span>
+<div>
+<h3>${escapeHtml(doc.name)}</h3>
+<span class="badge">${doc.categoryTitle}</span>
+</div>
+</div>
+<div class="file-meta">
+<span>Last modified: ${doc.modified?formatDate(doc.modified):'Not available'}</span>
+<span>File size: ${formatBytes(doc.size)}</span>
+<span class="badge visibility-${doc.visibility}">${doc.visibility==='private'?'Private':'Public'}</span>
+${doc.featured?'<span class="badge">Featured</span>':''}
+</div>
+<div class="file-actions">
+${showDownload?`<button class="preview-button" data-preview="${doc.path}" type="button">Preview</button>`:`<a href="${requestAccessUrl}" target="_blank" rel="noopener"><button type="button">Request</button></a>`}
+${showDownload?`<a href="${doc.url}" target="_blank" rel="noopener" download><button class="download-button" type="button">Download</button></a>`:`<a href="${requestAccessUrl}" target="_blank" rel="noopener"><button type="button">Access</button></a>`}
+<button class="more-button" data-copy="${doc.path}" type="button" aria-label="Copy file path">⋯</button>
+</div>
+`;
+return card;
+}
+
+function renderQuickLists(){
+const featured=allDocuments.filter(doc=>doc.visibility==='public'&&doc.featured).slice(0,6);
+const fallback=[...allDocuments].filter(doc=>doc.visibility==='public').sort((a,b)=>dateValue(b.modified)-dateValue(a.modified)).slice(0,6);
+const recent=[...allDocuments].sort((a,b)=>dateValue(b.modified)-dateValue(a.modified)).slice(0,8);
+
+renderCompactList('featuredList',featured.length?featured:fallback,'No featured documents available yet.');
+renderCompactList('recentList',recent,'No recent documents available yet.');
+}
+
+function renderCompactList(containerId,docs,emptyText){
+const container=document.getElementById(containerId);
+if(!docs.length){
+container.innerHTML=`<p class="empty-state">${emptyText}</p>`;
+return;
+}
+
+container.innerHTML=`<ul>${docs.map(doc=>`
+<li>
+<span class="doc-icon" aria-hidden="true">${getFileIcon(doc.extension)}</span>
+<a href="${doc.visibility==='public'?doc.url:requestAccessUrl}" target="_blank" rel="noopener">
+<strong>${escapeHtml(doc.name)}</strong>
+<span>${doc.categoryTitle} • ${doc.modified?formatDate(doc.modified):'No date'}</span>
+</a>
+<span class="badge">${doc.visibility}</span>
+</li>
+`).join('')}</ul>`;
+}
+
+function renderPrivateDocuments(){
+const privateDocs=getFilteredDocuments().filter(doc=>doc.visibility==='private');
+renderFileList(privateDocs,'privateFiles',false,'private');
+}
+
+function populateFilterOptions(){
+const categoryFilter=document.getElementById('categoryFilter');
+const fileTypeFilter=document.getElementById('fileTypeFilter');
+
+if(!categoryFilter.dataset.ready){
+categoryFilter.innerHTML='<option value="all">All categories</option>'+categories.map(category=>`<option value="${category.key}">${category.title}</option>`).join('');
+categoryFilter.dataset.ready='true';
+}
+
+const current=fileTypeFilter.value||'all';
+const types=[...new Set(allDocuments.map(doc=>doc.extension).filter(Boolean))].sort();
+fileTypeFilter.innerHTML='<option value="all">All file types</option>'+types.map(type=>`<option value="${type}">${type.toUpperCase()}</option>`).join('');
+fileTypeFilter.value=types.includes(current)?current:'all';
+}
+
+function updateStatusText(count){
+const status=document.getElementById('libraryStatus');
+status.textContent=`${count} matching file${count===1?'':'s'}`;
+}
+
+function setLoadingState(isLoading){
+document.getElementById('refreshButton').disabled=isLoading;
+document.getElementById('refreshButton').textContent=isLoading?'↻':'⟳';
+document.getElementById('libraryStatus').textContent=isLoading?'Loading documents...':'Ready';
+}
+
+function openPreview(path){
+const doc=allDocuments.find(item=>item.path===path);
+if(!doc||doc.visibility!=='public')return;
+
+document.getElementById('previewTitle').textContent=doc.name;
+document.getElementById('previewFrame').src=doc.url;
+document.getElementById('previewModal').classList.add('open');
+}
+
+function closePreview(){
+document.getElementById('previewFrame').src='about:blank';
+document.getElementById('previewModal').classList.remove('open');
+}
+
+function copyPath(path){
+if(navigator.clipboard){
+navigator.clipboard.writeText(path);
+}
+}
+
+function getFileIcon(extension){
+const map={
+pdf:'📕',
+doc:'📘',
+docx:'📘',
+xls:'📗',
+xlsx:'📗',
+csv:'📊',
+ppt:'📙',
+pptx:'📙',
+txt:'📄',
+md:'📄',
+jpg:'🖼',
+jpeg:'🖼',
+png:'🖼',
+webp:'🖼',
+zip:'🗄'
+};
+return map[extension]||'📄';
+}
+
+function formatBytes(bytes){
+if(!bytes)return 'Unknown';
+const units=['B','KB','MB','GB','TB'];
+let value=bytes;
+let index=0;
+while(value>=1024&&index<units.length-1){
+value/=1024;
+index++;
+}
+return `${value.toFixed(value>=10||index===0?0:1)} ${units[index]}`;
+}
+
+function formatDate(value){
+return new Intl.DateTimeFormat(undefined,{year:'numeric',month:'short',day:'numeric'}).format(new Date(value));
+}
+
+function dateValue(value){
+return value?new Date(value).getTime():0;
+}
+
+function escapeHtml(value){
+return value.replace(/[&<>"']/g,character=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[character]));
+}
+
+function bindEvents(){
+const searchInput=document.getElementById('searchInput');
+const filters=['categoryFilter','visibilityFilter','sortFilter','fileTypeFilter'];
+let searchTimer;
+
+searchInput.addEventListener('input',event=>{
+clearTimeout(searchTimer);
+searchTimer=setTimeout(()=>{
+currentSearch=event.target.value;
+renderInterface();
+},120);
+});
+
+filters.forEach(id=>{
+document.getElementById(id).addEventListener('change',renderInterface);
+});
+
+document.getElementById('refreshButton').addEventListener('click',listFilesByType);
+document.getElementById('closePreview').addEventListener('click',closePreview);
+document.getElementById('previewModal').addEventListener('click',event=>{
+if(event.target.id==='previewModal')closePreview();
+});
+
+document.getElementById('mobileMenu').addEventListener('click',()=>{
+document.body.classList.toggle('sidebar-open');
+});
+
+document.addEventListener('click',event=>{
+const previewButton=event.target.closest('[data-preview]');
+const copyButton=event.target.closest('[data-copy]');
+const navLink=event.target.closest('.nav-link');
+
+if(previewButton)openPreview(previewButton.dataset.preview);
+if(copyButton)copyPath(copyButton.dataset.copy);
+if(navLink)document.body.classList.remove('sidebar-open');
+});
+
+document.addEventListener('keydown',event=>{
+if(event.key==='Escape')closePreview();
+});
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+bindEvents();
+populateFilterOptions();
 listFilesByType();
 });
 </script>
 </head>
 
 <body data-theme="default">
+<!-- =======================================================
+     HTML / APPLICATION SHELL
+     ======================================================= -->
+<div class="app-shell">
+<aside class="sidebar" aria-label="Primary navigation">
+<div class="brand-block">
+<div class="brand-mark" aria-hidden="true">📁</div>
+<div class="brand-text">
+<strong>TREDT Union</strong>
+<span>Document Portal</span>
+</div>
+</div>
 
-<header>
-TREDT Union File Directory
-<select class="theme-selector" onchange="document.body.setAttribute('data-theme', this.value.toLowerCase())">
+<nav class="sidebar-nav">
+<a class="nav-link active" href="#dashboard"><span class="icon">🏠</span>Dashboard</a>
+<a class="nav-link" href="#acts"><span class="icon">📜</span>Acts</a>
+<a class="nav-link" href="#laws"><span class="icon">⚖</span>Laws</a>
+<a class="nav-link" href="#constitutions"><span class="icon">📖</span>Constitutions</a>
+<a class="nav-link" href="#charters"><span class="icon">📚</span>Charters</a>
+<a class="nav-link" href="#declarations"><span class="icon">📄</span>Declarations</a>
+<a class="nav-link" href="#drafts"><span class="icon">📝</span>Drafts</a>
+<a class="nav-link" href="#emails"><span class="icon">✉</span>Emails</a>
+<a class="nav-link" href="#tax-returns"><span class="icon">💰</span>Tax Returns</a>
+<a class="nav-link" href="#letters"><span class="icon">📬</span>Letters</a>
+<a class="nav-link" href="#private-documents"><span class="icon">🔒</span>Private Documents</a>
+<a class="nav-link" href="#featured-documents"><span class="icon">⭐</span>Featured</a>
+<a class="nav-link" href="#recent-documents"><span class="icon">🕒</span>Recent</a>
+<a class="nav-link" href="#settings"><span class="icon">⚙</span>Settings</a>
+</nav>
+
+<div class="sidebar-footer">
+Public files can be previewed and downloaded. Private files remain request-only.
+</div>
+</aside>
+
+<div class="content-shell">
+<header class="topbar">
+<div class="topbar-grid">
+<button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open navigation">☰</button>
+<div class="top-title">
+<h1>TREDT Union File Directory</h1>
+<p>Professional document management portal</p>
+</div>
+
+<label class="search-wrap" for="searchInput">
+<span aria-hidden="true">⌕</span>
+<input class="search-input" id="searchInput" type="search" placeholder="Search by filename, category, tags, description, or visibility" autocomplete="off" />
+</label>
+
+<select class="theme-selector" aria-label="Theme selector" onchange="document.body.setAttribute('data-theme', this.value.toLowerCase())">
 <option>Default</option>
 <option>Dark</option>
 <option>Synthwave</option>
@@ -239,25 +1473,161 @@ TREDT Union File Directory
 <option>DOS</option>
 <option>Radioactive</option>
 </select>
+
+<div class="account-area" aria-label="User account area">
+<div class="account-avatar" aria-hidden="true">TU</div>
+<div class="account-copy">
+<strong>Portal User</strong>
+<span>Secure access</span>
+</div>
+</div>
+
+<button class="refresh-button" id="refreshButton" type="button" aria-label="Refresh document library">⟳</button>
+</div>
+
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+<span>Home</span>
+<span aria-hidden="true">/</span>
+<span>Document Portal</span>
+<span aria-hidden="true">/</span>
+<strong>Library</strong>
+</nav>
 </header>
 
 <main>
-<div class="request-button">
-<a href="https://tredtunion.odoo.com/contactus">
-<button>Request Private File</button>
-</a>
+<section class="hero-panel" id="dashboard" aria-labelledby="dashboardTitle">
+<div>
+<p class="eyebrow">Government Document Management</p>
+<h2 id="dashboardTitle">A modern directory for public records and protected document requests.</h2>
+<p>Browse official files, preview public documents, request access to private records, and keep the library organized by category, visibility, type, and update date.</p>
+<div class="hero-actions">
+<a href="#document-library"><button class="primary-action" type="button">Open Library</button></a>
+<a href="https://tredtunion.odoo.com/contactus" target="_blank" rel="noopener"><button class="secondary-action" type="button">Request Private File</button></a>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="statsTitle">
+<div class="section-heading">
+<div>
+<h2 id="statsTitle">Dashboard</h2>
+<p>Live summary generated from the Supabase storage library.</p>
+</div>
+<span class="status-text" id="libraryStatus" role="status">Loading documents...</span>
+</div>
+<div class="stats-grid" id="statsGrid" aria-live="polite"></div>
+</section>
+
+<section id="document-library" aria-labelledby="libraryTitle">
+<div class="section-heading">
+<div>
+<h2 id="libraryTitle">Document Library</h2>
+<p>Public documents are grouped into collapsible professional categories.</p>
+</div>
 </div>
 
-<h2>Public Files</h2>
-<div id="publicFiles">Loading public files...</div>
+<form class="filters-bar" aria-label="Document filters">
+<label>Category
+<select id="categoryFilter"></select>
+</label>
+<label>Visibility
+<select id="visibilityFilter">
+<option value="all">All visibility</option>
+<option value="public">Public</option>
+<option value="private">Private</option>
+</select>
+</label>
+<label>Sort
+<select id="sortFilter">
+<option value="newest">Newest</option>
+<option value="oldest">Oldest</option>
+<option value="az">A-Z</option>
+<option value="za">Z-A</option>
+</select>
+</label>
+<label>File Type
+<select id="fileTypeFilter">
+<option value="all">All file types</option>
+</select>
+</label>
+<label>Quick Action
+<select aria-label="Quick action" onchange="if(this.value){location.hash=this.value;this.value='';}">
+<option value="">Jump to...</option>
+<option value="#featured-documents">Featured</option>
+<option value="#recent-documents">Recent</option>
+<option value="#private-documents">Private</option>
+</select>
+</label>
+</form>
 
-<h2>Private Files</h2>
+<div class="category-stack" id="categoryStack"></div>
+</section>
+
+<section class="quick-grid" aria-label="Featured and recent documents">
+<div id="featured-documents">
+<div class="section-heading">
+<div>
+<h2>Featured Documents</h2>
+<p>Pinned, important, featured, or latest public files for quick access.</p>
+</div>
+</div>
+<div class="compact-list" id="featuredList"></div>
+</div>
+
+<div id="recent-documents">
+<div class="section-heading">
+<div>
+<h2>Recent Documents</h2>
+<p>The newest documents found in the storage directory.</p>
+</div>
+</div>
+<div class="compact-list" id="recentList"></div>
+</div>
+</section>
+
+<section id="private-documents" aria-labelledby="privateTitle">
+<div class="section-heading">
+<div>
+<h2 id="privateTitle">Private Documents</h2>
+<p>Private files are listed separately and remain protected behind the existing request-access path.</p>
+</div>
+<a href="https://tredtunion.odoo.com/contactus" target="_blank" rel="noopener"><button class="primary-action" type="button">Request Access</button></a>
+</div>
+<div class="private-panel">
 <div id="privateFiles">Loading private files...</div>
+</div>
+</section>
 
+<section id="settings" aria-labelledby="settingsTitle">
+<div class="section-heading">
+<div>
+<h2 id="settingsTitle">Settings</h2>
+<p>Use the theme selector, search, filters, and refresh control in the top navigation to manage the portal view.</p>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="legacyPublicTitle" class="sr-only">
+<h2 id="legacyPublicTitle">Public Files</h2>
+<div id="publicFiles">Loading public files...</div>
+</section>
 </main>
 
+<footer class="footer">
+<span>TREDT Union File Directory</span>
+<span>Powered by Supabase Storage</span>
+</footer>
+</div>
+</div>
+
+<div class="modal" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+<div class="modal-card">
+<div class="modal-head">
+<strong id="previewTitle">Document preview</strong>
+<button class="secondary-action" id="closePreview" type="button">Close</button>
+</div>
+<iframe id="previewFrame" title="Document preview" loading="lazy"></iframe>
+</div>
+</div>
 </body>
 </html>
-
-
-
